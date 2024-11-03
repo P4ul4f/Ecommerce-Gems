@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://ecommerce-gemstone.vercel.app", 
+  baseURL: "https://luxury-gemstone.vercel.app", 
 });
 
 export default api;
