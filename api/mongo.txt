@@ -1,0 +1,8 @@
+MONGODB
+username:paulaferreyra24
+pass: l4uNgLZdiJH6uJlb
+l4uNgLZdiJH6uJlb
+
+connection string: mongodb+srv://paulaferreyra24:l4uNgLZdiJH6uJlb@cluster0.gmhce.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+
+npm install mongodb

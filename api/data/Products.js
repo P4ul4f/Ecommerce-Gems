@@ -1,0 +1,58 @@
+const products = [
+  {
+    name: "Amethyst",
+    image: "http://localhost:8080/uploads/gem1.png",
+    description: "A stunning purple gemstone known for its calming energy and clarity.",
+    rating: 4.5,
+    numReview: 10,
+    price: 50,
+    countInStock: 100,
+  },
+  {
+    name: "Pyrite",
+    image: "http://localhost:8080/uploads/pirita.png",
+    description: "A sparkling gemstone with a golden hue, symbolizing wealth and protection.",
+    rating: 4.0,
+    numReview: 5,
+    price: 30,
+    countInStock: 50,
+  },
+  {
+    name: "Diamond",
+    image: "http://localhost:8080/uploads/diamond.png",
+    description: "The ultimate symbol of purity and strength, treasured for its brilliance.",
+    rating: 4.5,
+    numReview: 6,
+    price: 40,
+    countInStock: 20,
+  },
+  {
+    name: "Tourmaline",
+    image: "http://localhost:8080/uploads/brown.png",
+    description: "A rich brown gemstone, admired for its earthy tones and grounding energy",
+    rating: 4.2,
+    numReview: 4,
+    price: 20,
+    countInStock: 30,
+  },
+  {
+    name: "Rose Quartz",
+    image: "http://localhost:8080/uploads/cuarzorosa.png",
+    description: "A soft pink gemstone, cherished for promoting love and emotional healing.",
+    rating: 4.8,
+    numReview: 8,
+    price: 30,
+    countInStock: 50,
+  },
+  {
+    name: "Emerald",
+    image: "http://localhost:8080/uploads/esmeralda.png",
+    description: "A brilliant green gemstone, valued for its rarity and timeless elegance.",
+    rating: 4.0,
+    numReview: 5,
+    price: 35,
+    countInStock: 10,
+  },
+];
+
+module.exports = products;
