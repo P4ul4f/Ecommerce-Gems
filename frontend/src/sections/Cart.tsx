@@ -58,7 +58,6 @@ export const Cart: React.FC = () => {
         price: item.price,
         quantity: item.quantity,
       })),
-      shippingAddress: {}, // Envía un objeto vacío, se llenará más tarde
     };
 
     try {

@@ -71,7 +71,9 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
   return (
     <motion.section
-      className="pt-24 flex flex-col justify-center"
+      className={`pt-24 flex flex-col justify-center ${
+        showModal ? "blur-md" : ""
+      }`}
       style={{
         backgroundImage: `url(${starsBg.src})`,
       }}

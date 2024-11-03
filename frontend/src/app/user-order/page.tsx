@@ -5,8 +5,8 @@ import { Footer } from "@/sections/Footer";
 import starsBg from "@/assets/stars.png";
 import Image from "next/image";
 import api from "@/services/axios";
-import {motion} from "framer-motion";
-import {Spinner} from "@nextui-org/react";
+import { motion } from "framer-motion";
+import { Spinner } from "@nextui-org/react";
 
 // Definir interfaces para los tipos de datos
 interface Item {
@@ -21,6 +21,7 @@ interface Order {
   _id: string;
   items?: Item[]; // Hacer items opcional
   totalPrice: number;
+  isCompleted: boolean;
 }
 
 const CartPage = () => {
@@ -58,7 +59,7 @@ const CartPage = () => {
     fetchOrders();
   }, []);
 
-  if (loading) return <Spinner color="default"/>;
+  if (loading) return <Spinner color="default" />;
   if (error) return <p>Error: {error}</p>;
 
   return (
@@ -84,7 +85,7 @@ const CartPage = () => {
             <h2 className="text-6xl tracking-tighter font-bold text-white mb-4">
               Your Orders
             </h2>
-            {orders.length > 0 ? (
+            {orders.length >= 0 ? (
               orders.map((order) => (
                 <div
                   key={order._id}
@@ -95,9 +96,9 @@ const CartPage = () => {
                     <p className="text-lg text-white/80">
                       Order ID: {order._id}
                     </p>
-                    
                   </div>
                   <div className="flex justify-end items-center">
+                    {order.isCompleted ? (
                       <a
                         href={`/orderdetails/${order._id}`}
                         style={{
@@ -107,7 +108,18 @@ const CartPage = () => {
                       >
                         View Details
                       </a>
-                    </div>
+                    ) : (
+                      <a
+                        href="/order"
+                        style={{
+                          color: "#ffffff",
+                          textShadow: "2px 2px 12px #ffffff",
+                        }}
+                      >
+                        Finalizar Compra
+                      </a>
+                    )}
+                  </div>
                   {/* Items de la Orden */}
                   {order.items && order.items.length > 0 ? (
                     order.items.map((item) => (

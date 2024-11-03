@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 import { motion } from "framer-motion";
 import starsBg from "@/assets/stars.png";
 import { Button } from "@/components/Button";
@@ -17,18 +16,15 @@ export const AddToCartModal: React.FC<AddToCartModalProps> = ({
 }) => {
   return (
     <motion.div
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
       <div
-        className="bg-white bg-opacity-10 border border-white rounded-lg p-8 text-center"
+        className="bg-white bg-opacity-10 border border-white rounded-lg p-8 text-center shadow-lg"
         style={{
-          boxShadow:
-            "0 0 10px rgba(255, 255, 255, 0.6), 0 0 20px rgba(255, 255, 255, 0.4)",
           backgroundImage: `url(${starsBg.src})`,
-          backgroundSize: "cover",
         }}
       >
         <h2 className="text-2xl font-bold text-white mb-4">

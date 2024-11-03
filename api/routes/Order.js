@@ -10,7 +10,6 @@ orderRoute.post(
   asyncHandler(async (req, res) => {
     const {
       orderItems,
-      shippingAddress,
       paymentMethods,
       shippingPrice,
       taxPrice,
@@ -25,7 +24,6 @@ orderRoute.post(
     } else {
       const order = new Order({
         orderItems,
-        shippingAddress,
         paymentMethods,
         shippingPrice,
         taxPrice,
@@ -95,8 +93,10 @@ orderRoute.put(
           updated_time: paymentResult.updated_time,
           email_address: paymentResult.email_address,
         };
-      } else {
-        console.log("Payment result is missing."); // Manejo de error si no se proporciona el resultado del pago
+      }
+      
+      if (order.shippingAddress && order.isPaid) {
+        order.isCompleted = true; // Marcar la orden como completada
       }
 
       // Guardar los cambios en la base de datos

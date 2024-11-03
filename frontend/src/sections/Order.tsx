@@ -21,6 +21,8 @@ export const Order: React.FC = () => {
     country: "",
   });
 
+  const [isAddressSaved, setIsAddressSaved] = useState(false);
+
   // Calcular el precio total del carrito
   const totalPrice = cart.items.reduce(
     (acc, item) => acc + item.price * item.quantity,
@@ -47,24 +49,25 @@ export const Order: React.FC = () => {
     getPaypalClientID();
   }, []);
 
-  
-
   useEffect(() => {
     // Cargar la dirección de envío guardada en local storage al montar el componente
     const savedShippingAddress = localStorage.getItem("shippingAddress");
     if (savedShippingAddress) {
       setShippingAddress(JSON.parse(savedShippingAddress));
+      setIsAddressSaved(true);
     }
   }, []);
 
   const handleShippingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setShippingAddress({ ...shippingAddress, [name]: value });
+    setIsAddressSaved(false);
   };
 
   // Función para guardar la dirección de envío en local storage
   const saveShippingAddress = () => {
     localStorage.setItem("shippingAddress", JSON.stringify(shippingAddress));
+    setIsAddressSaved(true);
   };
 
   const saveOrder = async (paymentResult: any) => {
@@ -92,9 +95,14 @@ export const Order: React.FC = () => {
         orderData,
         config
       );
+
+      const createdOrderId = response.data._id;
+
+      console.log("Order created:", createdOrderId);
+
       localStorage.removeItem("cartItems");
       localStorage.removeItem("shippingAddress");
-      window.location.href = "/user-order";
+      window.location.href = "/user-order/${createdOrderId}";
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -181,9 +189,10 @@ export const Order: React.FC = () => {
             <button
               type="button"
               onClick={saveShippingAddress}
+              disabled={isAddressSaved}
               className="w-full bg-white/15 text-white font-bold py-2 rounded hover:bg-white/30"
             >
-              Save Shipping Address
+              {isAddressSaved ? "Address Saved" : "Save Shipping Address"}
             </button>
           </div>
 
