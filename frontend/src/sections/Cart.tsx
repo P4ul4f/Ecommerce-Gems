@@ -2,13 +2,12 @@
 import React from "react";
 import Image from "next/image";
 import { Button } from "@/components/Button";
-import { useCart } from "@/context/CartContext"; 
+import { useCart } from "@/context/CartContext";
 import { useEffect } from "react";
 import { BASE_URL } from "@/constants/BASE_URL";
 
 export const Cart: React.FC = () => {
   const { cart, dispatch } = useCart(); // Extraer cart y dispatch del contexto
-
 
   // Calcular el precio total del carrito
   const totalPrice = cart.items.reduce(
@@ -44,20 +43,14 @@ export const Cart: React.FC = () => {
 
   // Manejar la eliminación de un ítem
   const handleRemoveItem = (productId: string) => {
-    if (
-      window.confirm(
-        "Are you sure you want to remove this item from your cart?"
-      )
-    ) {
-      dispatch({ type: "REMOVE_FROM_CART", payload: productId });
-    }
+    dispatch({ type: "REMOVE_FROM_CART", payload: productId });
   };
 
   console.log("Items in cart:", cart.items);
 
   const handleCheckout = async () => {
     const orderData = {
-      orderItems: cart.items.map(item => ({
+      orderItems: cart.items.map((item) => ({
         product: item._id,
         name: item.name,
         qty: item.quantity,
@@ -73,7 +66,7 @@ export const Cart: React.FC = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem("authToken")}`,
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
         body: JSON.stringify(orderData),
       });
@@ -98,8 +91,10 @@ export const Cart: React.FC = () => {
 
   return (
     <section className="container mx-auto p-8 flex flex-col md:flex-row gap-8">
-      <div className="md:w-2/3 p-6 rounded-lg bg-[radial-gradient(90%_70%_at_center_center,rgb(140,69,255,0.5)_15%,rgb(14,0,36,-5)_78%,transparent)]
-" >
+      <div
+        className="md:w-2/3 p-6 rounded-lg bg-[radial-gradient(90%_70%_at_center_center,rgb(140,69,255,0.5)_15%,rgb(14,0,36,-5)_78%,transparent)]
+"
+      >
         <h2 className="text-2xl font-bold text-white mb-4">Your Cart</h2>
         {cart.items.length > 0 ? (
           cart.items.map((item) => (

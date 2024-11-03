@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ProductShowcase } from "./ProductShowcase";
 import { FaStar, FaRegStar } from "react-icons/fa";
+import {AddToCartModal} from "@/modals/AddToCartModal";
 
 interface ProductDetailsProps {
   product: Product;
@@ -16,6 +17,7 @@ interface ProductDetailsProps {
 const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const { dispatch } = useCart();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
@@ -33,25 +35,39 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
         quantity: 1,
       };
       dispatch({ type: "ADD_TO_CART", payload: cartItem });
+      setShowModal(true);
     } else {
       window.location.href = "/register";
     }
   };
 
- // Función para renderizar las estrellas de acuerdo al rating
-const renderStars = (rating: number) => {
-  const fullStars = Math.round(rating); // Redondea el rating
-  const starsArray = Array(5).fill(null).map((_, index) => (
-    index < fullStars ? (
-      <FaStar key={index} className="text-white" />
-    ) : (
-      <FaRegStar key={index} className="text-white" />
-    )
-  ));
+  const handleContinueShopping = () => {
+    window.location.href = "/products"; // Redirige a la página de productos
+  };
 
-  return starsArray;
-};
+  const handleGoToCart = () => {
+    window.location.href = "/cart"; // Redirige al carrito
+  };
 
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
+  // Función para renderizar las estrellas de acuerdo al rating
+  const renderStars = (rating: number) => {
+    const fullStars = Math.round(rating); // Redondea el rating
+    const starsArray = Array(5)
+      .fill(null)
+      .map((_, index) =>
+        index < fullStars ? (
+          <FaStar key={index} className="text-white" />
+        ) : (
+          <FaRegStar key={index} className="text-white" />
+        )
+      );
+
+    return starsArray;
+  };
 
   return (
     <motion.section
@@ -108,6 +124,16 @@ const renderStars = (rating: number) => {
         </div>
       </div>
       <ProductShowcase />
+
+      {/* Renderiza el Modal si showModal es true */}
+      {showModal && (
+        <AddToCartModal
+          onClose={() => setShowModal(false)}
+          onContinueShopping={handleContinueShopping}
+          onGoToCart={handleGoToCart}
+        />
+      )}
+
     </motion.section>
   );
 };

@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode : true,
   images: {
-    domains: ['localhost'],
+    domains: ['luxury-gemstone.vercel.app'],
   },
   webpack(config) {
     // Encontrar la regla existente que maneja las importaciones de SVG

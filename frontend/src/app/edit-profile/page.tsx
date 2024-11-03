@@ -24,7 +24,7 @@ const EditProfilePage = () => {
           },
         };
 
-        const response = await api.get("/users/profile", config);
+        const response = await api.get("/api/users/profile", config);
         setProfileData(response.data);
       } catch (err) {
         console.error("Error fetching profile data", err);

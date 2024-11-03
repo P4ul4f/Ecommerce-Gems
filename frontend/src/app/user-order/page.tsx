@@ -6,6 +6,7 @@ import starsBg from "@/assets/stars.png";
 import Image from "next/image";
 import api from "@/services/axios";
 import {motion} from "framer-motion";
+import {Spinner} from "@nextui-org/react";
 
 // Definir interfaces para los tipos de datos
 interface Item {
@@ -25,9 +26,11 @@ interface Order {
 const CartPage = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchOrders = async () => {
+      setLoading(true);
       try {
         const token = localStorage.getItem("authToken");
         if (!token) {
@@ -41,17 +44,22 @@ const CartPage = () => {
           },
         };
 
-        const response = await api.get("/orders", config);
+        const response = await api.get("/api/orders", config);
         console.log("Fetched orders:", response.data); // Log para verificar la respuesta
         setOrders(response.data);
+        setLoading(false);
       } catch (err) {
         setError("Error fetching orders.");
         console.error(err);
+        setLoading(false);
       }
     };
 
     fetchOrders();
   }, []);
+
+  if (loading) return <Spinner color="default"/>;
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <>

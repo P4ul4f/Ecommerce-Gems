@@ -6,6 +6,7 @@ import starsBg from "@/assets/stars.png";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { BASE_URL } from "@/constants/BASE_URL";
+import { Spinner } from "@nextui-org/react";
 
 interface Product {
   _id: string;
@@ -15,29 +16,28 @@ interface Product {
 }
 
 export const Products = () => {
-  const [products, setProducts] = useState<Product[]>([]);;
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
-        setLoading(true); // Asegúrate de que la carga esté activada antes de hacer la solicitud
-        try {
-            const res = await axios.get(`${BASE_URL}/api/products`);
-            // La respuesta de axios se encuentra en res.data
-            setProducts(res.data); 
-            setLoading(false);
-        } catch (err) {
-            setError(err instanceof Error ? err.message : "Unknown error");
-            setLoading(false);
-        }
+      setLoading(true);
+      try {
+        const res = await axios.get(`${BASE_URL}/api/products`);
+        // La respuesta de axios se encuentra en res.data
+        setProducts(res.data);
+        setLoading(false);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Unknown error");
+        setLoading(false);
+      }
     };
 
     fetchProducts();
-}, []);
+  }, []);
 
-
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Spinner color="default" />;
   if (error) return <p>Error: {error}</p>;
 
   return (

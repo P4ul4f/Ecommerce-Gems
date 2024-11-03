@@ -11,6 +11,8 @@
   "dependencies": {
     "@dotlottie/react-player": "^1.6.19",
     "@lottiefiles/dotlottie-react": "^0.7.2",
+    "@nextui-org/react": "^2.4.8",
+    "@nextui-org/spinner": "^2.0.34",
     "@paypal/react-paypal-js": "^8.7.0",
     "axios": "^1.7.7",
     "framer-motion": "^11.11.11",

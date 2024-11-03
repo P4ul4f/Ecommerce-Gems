@@ -15,16 +15,18 @@ export const Footer = () => {
 
           <div>
             <nav className="flex flex-col lg:flex-row gap-5 lg:gap-7 lg:flex-1 lg:justify-center">
-              <a href="/" className="text-white/70 hover:text-white text-xs md:text-sm  transition">
+              <a
+                href="/"
+                className="text-white/70 hover:text-white text-xs md:text-sm  transition"
+              >
                 Home
               </a>
-              <a href="/products" className="text-white/70 hover:text-white text-xs md:text-sm transition">
+              <a
+                href="/products"
+                className="text-white/70 hover:text-white text-xs md:text-sm transition"
+              >
                 Collections
               </a>
-              <a href="/" className="text-white/70 hover:text-white text-xs md:text-sm  transition">
-                Testimonials
-              </a>
-              
             </nav>
           </div>
           <div className="flex gap-5 lg:flex-1 lg:justify-end">

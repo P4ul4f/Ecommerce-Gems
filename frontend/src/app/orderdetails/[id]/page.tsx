@@ -7,6 +7,8 @@ import starsBg from "@/assets/stars.png";
 import { Order } from "@/types/order";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { BASE_URL } from "@/constants/BASE_URL";
+import { Spinner } from "@nextui-org/react";
 
 const OrderDetails: React.FC = () => {
   const { id } = useParams();
@@ -16,30 +18,37 @@ const OrderDetails: React.FC = () => {
 
   useEffect(() => {
     const fetchOrder = async () => {
-      const token = localStorage.getItem("authToken");
-      const response = await fetch(`http://localhost:8080/api/orders/${id}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setOrder(data);
-      } else {
-        setError("Error fetching order: " + response.status);
-        console.error("Error fetching order:", response.status);
+      setLoading(true);
+      try {
+        const token = localStorage.getItem("authToken");
+        const response = await fetch(`${BASE_URL}/api/orders/${id}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setOrder(data);
+          setLoading(false);
+        } else {
+          setError(`Error fetching order: ${response.status}`);
+          console.error("Error fetching order:", response.status);
+        }
+      } catch (err) {
+        console.error("An error occurred:", err);
+        setError(err instanceof Error ? err.message : "Unknown error");
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetchOrder();
   }, [id]);
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
+  if (loading) return <Spinner color="default" />;
 
   if (error) {
     return <p>{error}</p>;

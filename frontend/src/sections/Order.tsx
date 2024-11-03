@@ -5,12 +5,13 @@ import { useCart } from "@/context/CartContext";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import axios from "axios";
 import { BASE_URL } from "@/constants/BASE_URL";
-import { motion } from "framer-motion";
+import { Spinner } from "@nextui-org/react";
 
 export const Order: React.FC = () => {
   const { cart } = useCart();
   const [clientId, setClientId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   // Estado para la dirección de envío
   const [shippingAddress, setShippingAddress] = useState({
@@ -32,16 +33,21 @@ export const Order: React.FC = () => {
 
   useEffect(() => {
     const getPaypalClientID = async () => {
+      setLoading(true);
       try {
         const response = await axios.get(`${BASE_URL}/api/config/paypal`);
         setClientId(response.data);
+        setLoading(false);
       } catch (err) {
         console.error("Error fetching PayPal client ID:", err);
+        setLoading(false);
       }
     };
 
     getPaypalClientID();
   }, []);
+
+  
 
   useEffect(() => {
     // Cargar la dirección de envío guardada en local storage al montar el componente
@@ -86,11 +92,9 @@ export const Order: React.FC = () => {
         orderData,
         config
       );
-      console.log("Order updated successfully:", response.data);
-      alert("Order successfully updated!");
       localStorage.removeItem("cartItems");
       localStorage.removeItem("shippingAddress");
-      window.location.href = "/";
+      window.location.href = "/user-order";
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -100,6 +104,9 @@ export const Order: React.FC = () => {
       console.error(err);
     }
   };
+
+  if (loading) return <Spinner color="default" />;
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <section className="container mx-auto p-8 flex flex-col md:flex-row gap-8">

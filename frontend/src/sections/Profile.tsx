@@ -6,6 +6,7 @@ import starsBg from "@/assets/stars.png";
 import gridLines from "@/assets/grid-lines.png";
 import api from "@/services/axios";
 import { motion } from "framer-motion";
+import { Spinner } from "@nextui-org/react";
 
 const Profile = () => {
   const [profileData, setProfileData] = useState({
@@ -17,9 +18,11 @@ const Profile = () => {
   });
 
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProfile = async () => {
+      setLoading(true);
       try {
         const token = localStorage.getItem("authToken");
         if (!token) {
@@ -35,18 +38,23 @@ const Profile = () => {
 
         const response = await api.get("/api/users/profile", config);
         setProfileData(response.data);
+        setLoading(false);
       } catch (err) {
         setError("Error fetching profile data.");
         console.error(err);
+        setLoading(false);
       }
     };
 
     fetchProfile();
   }, []);
 
+  if (loading) return <Spinner color="default" />;
+  if (error) return <p>Error: {error}</p>;
+
   const handleLogout = () => {
     localStorage.removeItem("authToken");
-    localStorage.removeItem("cart");
+    localStorage.removeItem("cartItems");
     window.location.href = "/";
   };
 

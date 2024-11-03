@@ -10,10 +10,12 @@ export const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [termsAccepted, setTermsAccepted] = useState(false); // Nuevo estado para el checkbox
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError("");
 
     try {
       const response = await api.post("/api/users/register", {
@@ -21,14 +23,18 @@ export const Register = () => {
         email,
         password,
       });
-      // Aquí puedes guardar el token en localStorage o manejar la respuesta de otra forma
-      // localStorage.setItem("authToken", response.data.token);
-      window.location.href = "/";
+      window.location.href = "/login";
       // Redirigir al usuario o hacer alguna acción después del registro exitoso
-    } catch (error) {
+    } catch (error: any) {
+      if (error.response && error.response.status === 400) {
+        setError("Este email ya está en uso. Intenta con otro."); 
+      } else {
+        setError("Ocurrió un error al registrarse. Inténtalo de nuevo más tarde.");
+      }
       console.error("Error de registro", error);
     }
   };
+
   return (
     <section className="py-20 md:py-24">
       <div className="container">
