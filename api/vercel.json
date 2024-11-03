@@ -1,5 +1,7 @@
 {
-    "biulds": [
+    "version": 2,
+    "name": "ecommerce",
+    "builds": [
         {
             "src": "index.js",
             "use": "@vercel/node"
@@ -8,7 +10,7 @@
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "/"
+            "dest": "/index.js"
         }
     ]
 }
