@@ -18,6 +18,7 @@ export const ForgotPassword = () => {
     try {
       await api.post("/api/users/forgot-password", { email, newPassword });
       setMessage("Password updated successfully.");
+      window.location.href = "/login";
     } catch (error) {
       setMessage("Error updating password. Please try again.");
     }

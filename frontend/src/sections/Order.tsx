@@ -12,8 +12,8 @@ export const Order: React.FC = () => {
   const [clientId, setClientId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState<string | null>(null);
 
-  // Estado para la dirección de envío
   const [shippingAddress, setShippingAddress] = useState({
     address: "",
     city: "",
@@ -23,14 +23,13 @@ export const Order: React.FC = () => {
 
   const [isAddressSaved, setIsAddressSaved] = useState(false);
 
-  // Calcular el precio total del carrito
   const totalPrice = cart.items.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0
   );
   const subtotal = totalPrice;
-  const tax = subtotal * 0.1; // Cálculo de impuestos
-  const shippingPrice = 5; // Precio de envío fijo
+  const tax = subtotal * 0.1;
+  const shippingPrice = 5;
   const total = subtotal + tax + shippingPrice;
 
   useEffect(() => {
@@ -39,9 +38,9 @@ export const Order: React.FC = () => {
       try {
         const response = await axios.get(`${BASE_URL}/api/config/paypal`);
         setClientId(response.data);
-        setLoading(false);
       } catch (err) {
         console.error("Error fetching PayPal client ID:", err);
+      } finally {
         setLoading(false);
       }
     };
@@ -49,13 +48,7 @@ export const Order: React.FC = () => {
     getPaypalClientID();
   }, []);
 
-  // se guarda en localStorage cada vez que cambia shippingAddress
   useEffect(() => {
-    localStorage.setItem("shippingAddress", JSON.stringify(shippingAddress));
-  }, [shippingAddress]);
-
-  useEffect(() => {
-    // Cargar la dirección de envío guardada en local storage al montar el componente
     const savedShippingAddress = localStorage.getItem("shippingAddress");
     if (savedShippingAddress) {
       setShippingAddress(JSON.parse(savedShippingAddress));
@@ -70,37 +63,23 @@ export const Order: React.FC = () => {
     localStorage.setItem("shippingAddress", JSON.stringify(updatedAddress));
   };
 
-  // Función para guardar la dirección de envío en local storage
-  const saveShippingAddress = () => {
-    localStorage.setItem("shippingAddress", JSON.stringify(shippingAddress));
-    setIsAddressSaved(true);
-  };
-
-  const saveOrder = async (
-    paymentResult: any,
-    shippingAddressData: typeof shippingAddress
-  ) => {
+  const saveOrder = async (paymentResult: any) => {
     try {
       const token = localStorage.getItem("authToken");
       if (!token) throw new Error("Authentication required. Please login.");
 
       const config = { headers: { Authorization: `Bearer ${token}` } };
-
-      // Suponiendo que ya tienes el ID de la orden almacenado
       const orderId = localStorage.getItem("orderId");
       if (!orderId) throw new Error("Order ID not found.");
 
-      // Crear el objeto con solo la dirección de envío y el resultado del pago
       const orderData = {
-        shippingAddress: shippingAddressData, // Asegúrate de que estás usando el estado actualizado
+        shippingAddress, // Usar el estado actual de shippingAddress
         paymentResult,
       };
 
-      console.log("Shipping Address being sent:", shippingAddressData);
-
+      console.log("Shipping Address being sent:", shippingAddress);
       console.log("Order Data being sent:", orderData);
 
-      // Realizar la solicitud PUT para actualizar la orden
       const response = await axios.put(
         `${BASE_URL}/api/orders/${orderId}/payment`,
         orderData,
@@ -108,7 +87,6 @@ export const Order: React.FC = () => {
       );
 
       const createdOrderId = response.data._id;
-
       console.log("Order created:", createdOrderId);
 
       localStorage.removeItem("cartItems");
@@ -129,15 +107,11 @@ export const Order: React.FC = () => {
 
   return (
     <section className="container mx-auto p-8 flex flex-col md:flex-row gap-8">
-      {/* Sección de productos */}
       <div className="md:w-2/3 p-6 rounded-lg bg-[radial-gradient(90%_70%_at_center_center,rgb(140,69,255,0.5)_15%,rgb(14,0,36,-5)_78%,transparent)]">
         <h2 className="text-2xl font-bold text-white mb-4">Your Order</h2>
         {cart.items.length > 0 ? (
           cart.items.map((item) => (
-            <div
-              key={item._id}
-              className="flex items-center gap-16 p-4 border-b border-white/15"
-            >
+            <div key={item._id} className="flex items-center gap-16 p-4 border-b border-white/15">
               <Image
                 src={item.image}
                 alt={item.name}
@@ -174,32 +148,31 @@ export const Order: React.FC = () => {
         </div>
       </div>
 
-      {/* Sección del formulario de dirección de envío */}
-      <div className="md:w-1/3 max-h-full  p-4 bg-[radial-gradient(90%_70%_at_center_center,rgb(140,69,255,0.5)_15%,rgb(14,0,36,-5)_78%,transparent)]">
-        <h2 className="text-2xl font-bold text-white mb-4 ">
-          Shipping Address
-        </h2>
-        <form className=" p-4 rounded-lg gap-4 ">
+      <div className="md:w-1/3 max-h-full p-4 bg-[radial-gradient(90%_70%_at_center_center,rgb(140,69,255,0.5)_15%,rgb(14,0,36,-5)_78%,transparent)]">
+        <h2 className="text-2xl font-bold text-white mb-4">Shipping Address</h2>
+        <form className="p-4 rounded-lg gap-4">
           {["address", "city", "postcode", "country"].map((field) => (
             <div className="mb-4" key={field}>
-              <label className="block mb-1 text-white capitalize">
-                {field}
-              </label>
+              <label className="block mb-1 text-white capitalize">{field}</label>
               <input
                 type="text"
                 name={field}
-                value={(shippingAddress as any)[field]}
+                value={shippingAddress[field as keyof typeof shippingAddress]}
                 onChange={handleShippingChange}
                 className="w-full border border-white/30 bg-white/90 rounded text-black p-2"
                 required
               />
             </div>
           ))}
-          {/* Botón para guardar la dirección de envío */}
           <div className="pt-6">
             <button
               type="button"
-              onClick={saveShippingAddress}
+              onClick={() => {
+                // Guardar en localStorage cuando el usuario hace clic en "Guardar dirección de envío"
+                localStorage.setItem("shippingAddress", JSON.stringify(shippingAddress));
+                setIsAddressSaved(true);
+                console.log("Shipping Address saved:", shippingAddress);
+              }}
               disabled={isAddressSaved}
               className={`w-full text-white font-bold py-2 rounded ${
                 isAddressSaved
@@ -239,39 +212,43 @@ export const Order: React.FC = () => {
                     try {
                       const details = await actions.order?.capture();
                       if (details) {
-                        // Imprimir la dirección de envío para verificar que contiene datos válidos
-                        console.log(
-                          "Shipping Address before saving order:",
-                          shippingAddress
-                        );
+                        console.log("Shipping Address before saving order:", shippingAddress);
 
-                        // Asegurarse de que `shippingAddress` tiene todos los campos llenos
+                        // Verificación de los campos de la dirección de envío
                         if (
-                          Object.values(shippingAddress).every(
-                            (field) => field.trim() !== ""
-                          )
+                          !shippingAddress.address ||
+                          !shippingAddress.city ||
+                          !shippingAddress.postcode ||
+                          !shippingAddress.country
                         ) {
-                          saveOrder(details, shippingAddress);
-                        } else {
-                          setError(
-                            "Complete all fields in the shipping address."
-                          );
+                          setError("Complete all fields in the shipping address.");
+                          return;
                         }
-                      } else {
-                        setError("Error: No order details found.");
+
+                        await saveOrder(details);
                       }
-                    } catch (error) {
-                      console.error("Error capturing the order:", error);
-                      setError("Error capturing the order.");
+                    } catch (err) {
+                      if (err instanceof Error) {
+                        setError(err.message);
+                      } else {
+                        setError("An unknown error occurred.");
+                      }
+                      console.error(err);
                     }
+                  }}
+                  onError={(err) => {
+                    setError("An error occurred with your payment. Please try again.");
+                    console.error("PayPal error:", err);
                   }}
                 />
               </PayPalScriptProvider>
             )}
           </div>
-          {error && <p className="text-red-500">{error}</p>}
         </form>
+        {message && <p className="text-green-500">{message}</p>}
+        {error && <p className="text-red-500">{error}</p>}
       </div>
     </section>
   );
 };
+

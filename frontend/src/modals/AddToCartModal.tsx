@@ -22,7 +22,7 @@ export const AddToCartModal: React.FC<AddToCartModalProps> = ({
     >
       <h2 className="text-4xl font-bold text-white mb-4 tracking-tighter">Product added to cart</h2>
       <p className="text-lg text-white/70 mb-6 p-4 tracking-tight">What would you like to do now?</p>
-      <div className="flex justify-center gap-4">
+      <div className="flex justify-center gap-4 mt-4">
         <Button
           onClick={() => {
             onContinueShopping();
