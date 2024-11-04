@@ -108,7 +108,7 @@ export const Order: React.FC = () => {
 
       localStorage.removeItem("cartItems");
       localStorage.removeItem("shippingAddress");
-      window.location.href = `/user-order/${createdOrderId}`;
+      window.location.href = `/orderdetails/${createdOrderId}`;
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);

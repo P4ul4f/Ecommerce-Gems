@@ -15,7 +15,7 @@ export const AddToCartModal: React.FC<AddToCartModalProps> = ({
 }) => {
   return (
     <motion.div
-      className="bg-white bg-opacity-10 border border-white rounded-lg p-8 text-center shadow-lg"
+      className="bg-black bg-opacity-10 border border-white/15 rounded-lg p-8 text-center shadow-lg"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
