@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ProductShowcase } from "./ProductShowcase";
 import { FaStar, FaRegStar } from "react-icons/fa";
-import {AddToCartModal} from "@/modals/AddToCartModal";
+import { AddToCartModal } from "@/modals/AddToCartModal";
 
 interface ProductDetailsProps {
   product: Product;
@@ -71,9 +71,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
   return (
     <motion.section
-      className={`pt-24 flex flex-col justify-center ${
-        showModal ? "blur-md" : ""
-      }`}
+      className="pt-24 flex flex-col justify-center relative"
       style={{
         backgroundImage: `url(${starsBg.src})`,
       }}
@@ -86,46 +84,48 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
         ease: "linear",
       }}
     >
-      <div
-        className="container flex flex-col md:flex-row items-center justify-center mx-auto h-full border border-white rounded-xl py-16"
-        style={{
-          boxShadow:
-            "0 0 10px rgba(255, 255, 255, 0.6), 0 0 20px rgba(255, 255, 255, 0.4)",
-        }}
-      >
-        <div className="md:w-1/2">
-          <Image
-            src={product.image}
-            alt={product.name}
-            className="h-80 w-full object-cover rounded-lg mb-4"
-            width={400} // Ajusta el ancho y alto según lo que necesites
-            height={400}
-          />
-        </div>
-        <div className="md:w-1/2 text-center md:text-left md:ml-10 tracking-tighter">
-          <h1 className="text-4xl md:text-5xl font-bold text-white">
-            {product.name}
-          </h1>
-          <p className="mt-4 text-lg text-white/50">{product.description}</p>
-          <div className="mt-2 text-lg text-white/60 flex gap-2">
-            Rating: {renderStars(product.rating)}
-            <span className="ml-2">({product.numReview} reviews)</span>
+      <div className={`${showModal ? "blur-md" : ""}`}>
+        <div
+          className="container flex flex-col md:flex-row items-center justify-center mx-auto h-full border border-white rounded-xl py-16"
+          style={{
+            boxShadow:
+              "0 0 10px rgba(255, 255, 255, 0.6), 0 0 20px rgba(255, 255, 255, 0.4)",
+          }}
+        >
+          <div className="md:w-1/2">
+            <Image
+              src={product.image}
+              alt={product.name}
+              className="h-80 w-full object-cover rounded-lg mb-4"
+              width={400} // Ajusta el ancho y alto según lo que necesites
+              height={400}
+            />
           </div>
-          <p className="mt-2 text-lg text-white/60">
-            In Stock: {product.countInStock}
-          </p>
-          <p className="mt-2 text-xl font-semibold text-white">
-            Price: ${product.price}
-          </p>
-          <div
-            className="flex justify-center md:justify-start mt-6"
-            onClick={handleAddToCart}
-          >
-            <Button href="#">Buy Now</Button>
+          <div className="md:w-1/2 text-center md:text-left md:ml-10 tracking-tighter">
+            <h1 className="text-4xl md:text-5xl font-bold text-white">
+              {product.name}
+            </h1>
+            <p className="mt-4 text-lg text-white/50">{product.description}</p>
+            <div className="mt-2 text-lg text-white/60 flex gap-2">
+              Rating: {renderStars(product.rating)}
+              <span className="ml-2">({product.numReview} reviews)</span>
+            </div>
+            <p className="mt-2 text-lg text-white/60">
+              In Stock: {product.countInStock}
+            </p>
+            <p className="mt-2 text-xl font-semibold text-white">
+              Price: ${product.price}
+            </p>
+            <div
+              className="flex justify-center md:justify-start mt-6"
+              onClick={handleAddToCart}
+            >
+              <Button href="#">Buy Now</Button>
+            </div>
           </div>
         </div>
+        <ProductShowcase />
       </div>
-      <ProductShowcase />
 
       {/* Renderiza el Modal si showModal es true */}
       {showModal && (

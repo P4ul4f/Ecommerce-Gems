@@ -7,22 +7,7 @@ import Image from "next/image";
 import api from "@/services/axios";
 import { motion } from "framer-motion";
 import { Spinner } from "@nextui-org/react";
-
-// Definir interfaces para los tipos de datos
-interface Item {
-  _id: string;
-  name: string;
-  image: string;
-  price: number;
-  quantity: number;
-}
-
-interface Order {
-  _id: string;
-  items?: Item[]; // Hacer items opcional
-  totalPrice: number;
-  isCompleted: boolean;
-}
+import { Order } from "@/types/order";
 
 const CartPage = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -85,13 +70,12 @@ const CartPage = () => {
             <h2 className="text-6xl tracking-tighter font-bold text-white mb-4">
               Your Orders
             </h2>
-            {orders.length >= 0 ? (
+            {orders.length > 0 ? (
               orders.map((order) => (
                 <div
                   key={order._id}
                   className="flex flex-col gap-2 p-6 border-b border-white/15"
                 >
-                  {/* Order ID y View Details */}
                   <div className="flex justify-between items-center ">
                     <p className="text-lg text-white/80">
                       Order ID: {order._id}
@@ -121,8 +105,8 @@ const CartPage = () => {
                     )}
                   </div>
                   {/* Items de la Orden */}
-                  {order.items && order.items.length >= 0 ? (
-                    order.items.map((item) => (
+                  {order.orderItems && order.orderItems.length > 0 ? (
+                    order.orderItems.map((item) => (
                       <div key={item._id} className="flex items-center gap-4">
                         <Image
                           src={item.image}
@@ -134,7 +118,7 @@ const CartPage = () => {
                         <div className="flex-grow">
                           <h3 className="text-lg text-white">{item.name}</h3>
                           <p className="text-white/50">
-                            ${item.price.toFixed(2)} x {item.quantity}
+                            ${item.price.toFixed(2)} x {item.qty}
                           </p>
                         </div>
                       </div>

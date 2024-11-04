@@ -65,8 +65,9 @@ export const Order: React.FC = () => {
 
   const handleShippingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setShippingAddress({ ...shippingAddress, [name]: value });
-    setIsAddressSaved(false);
+    const updatedAddress = { ...shippingAddress, [name]: value };
+    setShippingAddress(updatedAddress);
+    localStorage.setItem("shippingAddress", JSON.stringify(updatedAddress));
   };
 
   // Función para guardar la dirección de envío en local storage
@@ -107,7 +108,7 @@ export const Order: React.FC = () => {
 
       localStorage.removeItem("cartItems");
       localStorage.removeItem("shippingAddress");
-      window.location.href = "/user-order/${orderId}";
+      window.location.href = `/user-order/${createdOrderId}`;
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -197,8 +198,8 @@ export const Order: React.FC = () => {
               disabled={isAddressSaved}
               className={`w-full text-white font-bold py-2 rounded ${
                 isAddressSaved
-                  ? "bg-white/15 cursor-default" 
-                  : "bg-white/15 hover:bg-white/30 cursor-pointer"  
+                  ? "bg-white/15 cursor-default"
+                  : "bg-white/15 hover:bg-white/30 cursor-pointer"
               }`}
             >
               {isAddressSaved ? "Address Saved" : "Save Shipping Address"}

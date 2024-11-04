@@ -39,5 +39,6 @@ export interface ShippingAddress {
     shippingAddress: ShippingAddress; // Asegúrate de que este campo esté incluido
     paymentResult?: PaymentResult; // Campo opcional para el resultado del pago
     paidAt?: string; // Campo opcional
+    isCompleted?: boolean; // Campo opcional
   }
   

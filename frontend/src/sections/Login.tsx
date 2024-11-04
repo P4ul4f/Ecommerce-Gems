@@ -86,6 +86,9 @@ export const Login = () => {
                   className="p-2 bg-white/80 border text-black border-white rounded focus:outline-none focus:border-purple-800"
                 />
               </div>
+              <div>
+                <a href="/edit-profile" className="text-purple-800 text-center py-2">Forgot your password?</a>
+              </div>
               {errorMessage && (
                 <p className="text-red-500 text-center mb-4">{errorMessage}</p> // Mensaje de error
               )}
