@@ -77,7 +77,7 @@ orderRoute.put(
 
     if (order) {
       // Actualizar solo los campos necesarios
-      if (shippingAddress) {
+      if (shippingAddress && Object.values(shippingAddress).every(field => field.trim() !== "")) {
         order.shippingAddress = shippingAddress; // Actualizar la dirección de envío
       } else {
         console.log("Shipping address is missing."); // Manejo de error si no se proporciona la dirección

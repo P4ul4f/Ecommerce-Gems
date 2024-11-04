@@ -87,7 +87,7 @@ export const Login = () => {
                 />
               </div>
               <div>
-                <a href="" className="text-purple-800 text-center py-2">Forgot your password?</a>
+                <a href="/forgot-password" className="text-purple-800 text-center py-2">Forgot your password?</a>
               </div>
               {errorMessage && (
                 <p className="text-red-500 text-center mb-4">{errorMessage}</p> // Mensaje de error

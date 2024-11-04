@@ -76,7 +76,10 @@ export const Order: React.FC = () => {
     setIsAddressSaved(true);
   };
 
-  const saveOrder = async (paymentResult: any, shippingAddressData: typeof shippingAddress) => {
+  const saveOrder = async (
+    paymentResult: any,
+    shippingAddressData: typeof shippingAddress
+  ) => {
     try {
       const token = localStorage.getItem("authToken");
       if (!token) throw new Error("Authentication required. Please login.");
@@ -236,7 +239,24 @@ export const Order: React.FC = () => {
                     try {
                       const details = await actions.order?.capture();
                       if (details) {
-                        saveOrder(details, shippingAddress); // Guarda los detalles de la orden
+                        // Imprimir la dirección de envío para verificar que contiene datos válidos
+                        console.log(
+                          "Shipping Address before saving order:",
+                          shippingAddress
+                        );
+
+                        // Asegurarse de que `shippingAddress` tiene todos los campos llenos
+                        if (
+                          Object.values(shippingAddress).every(
+                            (field) => field.trim() !== ""
+                          )
+                        ) {
+                          saveOrder(details, shippingAddress);
+                        } else {
+                          setError(
+                            "Complete all fields in the shipping address."
+                          );
+                        }
                       } else {
                         setError("Error: No order details found.");
                       }

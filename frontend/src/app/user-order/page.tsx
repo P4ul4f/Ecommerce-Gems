@@ -31,7 +31,6 @@ const CartPage = () => {
         };
 
         const response = await api.get("/api/orders", config);
-        console.log("Fetched orders:", response.data); // Log para verificar la respuesta
         setOrders(response.data);
         setLoading(false);
       } catch (err) {

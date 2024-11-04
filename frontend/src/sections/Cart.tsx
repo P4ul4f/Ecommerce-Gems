@@ -92,7 +92,6 @@ export const Cart: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log("Cart items in CartPage:", cart.items);
   }, [cart.items]);
 
   return (
