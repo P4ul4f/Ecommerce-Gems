@@ -65,42 +65,51 @@ export const Order: React.FC = () => {
 
   const saveOrder = async (paymentResult: any) => {
     try {
-      const token = localStorage.getItem("authToken");
-      if (!token) throw new Error("Authentication required. Please login.");
+        const token = localStorage.getItem("authToken");
+        if (!token) throw new Error("Authentication required. Please login.");
 
-      const config = { headers: { Authorization: `Bearer ${token}` } };
-      const orderId = localStorage.getItem("orderId");
-      if (!orderId) throw new Error("Order ID not found.");
+        const config = { headers: { Authorization: `Bearer ${token}` } };
+        const orderId = localStorage.getItem("orderId");
+        if (!orderId) throw new Error("Order ID not found.");
 
-      const orderData = {
-        shippingAddress, // Usar el estado actual de shippingAddress
-        paymentResult,
-      };
+        // Leer la dirección de envío desde localStorage
+        const savedShippingAddress = JSON.parse(localStorage.getItem("shippingAddress") || '{}');
 
-      console.log("Shipping Address being sent:", shippingAddress);
-      console.log("Order Data being sent:", orderData);
+        // Asegúrate de que savedShippingAddress no esté vacío
+        if (!savedShippingAddress.address || !savedShippingAddress.city || !savedShippingAddress.postcode || !savedShippingAddress.country) {
+            throw new Error("Complete all fields in the shipping address.");
+        }
 
-      const response = await axios.put(
-        `${BASE_URL}/api/orders/${orderId}/payment`,
-        orderData,
-        config
-      );
+        const orderData = {
+            shippingAddress: savedShippingAddress, // Usar la dirección de envío desde localStorage
+            paymentResult,
+        };
 
-      const createdOrderId = response.data._id;
-      console.log("Order created:", createdOrderId);
+        console.log("Shipping Address being sent:", savedShippingAddress);
+        console.log("Order Data being sent:", orderData);
 
-      localStorage.removeItem("cartItems");
-      localStorage.removeItem("shippingAddress");
-      window.location.href = `/orderdetails/${createdOrderId}`;
+        const response = await axios.put(
+            `${BASE_URL}/api/orders/${orderId}/payment`,
+            orderData,
+            config
+        );
+
+        const createdOrderId = response.data._id;
+        console.log("Order created:", createdOrderId);
+
+        localStorage.removeItem("cartItems");
+        localStorage.removeItem("shippingAddress");
+        window.location.href = `/orderdetails/${createdOrderId}`;
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("An unknown error occurred.");
-      }
-      console.error(err);
+        if (err instanceof Error) {
+            setError(err.message);
+        } else {
+            setError("An unknown error occurred.");
+        }
+        console.error(err);
     }
-  };
+};
+
 
   if (loading) return <Spinner color="default" />;
   if (error) return <p>Error: {error}</p>;
