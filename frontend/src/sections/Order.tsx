@@ -56,12 +56,18 @@ export const Order: React.FC = () => {
     }
   }, []);
 
-  const handleShippingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    const updatedAddress = { ...shippingAddress, [name]: value };
-    setShippingAddress(updatedAddress);
-    localStorage.setItem("shippingAddress", JSON.stringify(updatedAddress));
-  };
+  const handleSaveShippingAddress = () => {
+    const shippingAddress = {
+        address: inputAddress,
+        city: inputCity,
+        postcode: inputPostcode,
+        country: inputCountry,
+    };
+    localStorage.setItem("shippingAddress", JSON.stringify(shippingAddress));
+    setShippingAddress(shippingAddress); // Actualiza el estado
+    console.log("Shipping Address saved:", shippingAddress);
+};
+
 
   const saveOrder = async (paymentResult: any) => {
     try {
@@ -72,20 +78,20 @@ export const Order: React.FC = () => {
         const orderId = localStorage.getItem("orderId");
         if (!orderId) throw new Error("Order ID not found.");
 
-        // Leer la dirección de envío desde localStorage
+        // Obtener la dirección de envío directamente desde localStorage
         const savedShippingAddress = JSON.parse(localStorage.getItem("shippingAddress") || '{}');
 
-        // Asegúrate de que savedShippingAddress no esté vacío
+        // Verificar si la dirección de envío está completa
         if (!savedShippingAddress.address || !savedShippingAddress.city || !savedShippingAddress.postcode || !savedShippingAddress.country) {
+            console.error("Shipping Address:", savedShippingAddress);
             throw new Error("Complete all fields in the shipping address.");
         }
 
         const orderData = {
-            shippingAddress: savedShippingAddress, // Usar la dirección de envío desde localStorage
+            shippingAddress: savedShippingAddress,
             paymentResult,
         };
 
-        console.log("Shipping Address being sent:", savedShippingAddress);
         console.log("Order Data being sent:", orderData);
 
         const response = await axios.put(
@@ -109,6 +115,7 @@ export const Order: React.FC = () => {
         console.error(err);
     }
 };
+
 
 
   if (loading) return <Spinner color="default" />;
