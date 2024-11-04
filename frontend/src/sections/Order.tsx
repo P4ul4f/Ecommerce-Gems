@@ -76,7 +76,7 @@ export const Order: React.FC = () => {
     setIsAddressSaved(true);
   };
 
-  const saveOrder = async (paymentResult: any) => {
+  const saveOrder = async (paymentResult: any, shippingAddressData: typeof shippingAddress) => {
     try {
       const token = localStorage.getItem("authToken");
       if (!token) throw new Error("Authentication required. Please login.");
@@ -89,9 +89,11 @@ export const Order: React.FC = () => {
 
       // Crear el objeto con solo la dirección de envío y el resultado del pago
       const orderData = {
-        shippingAddress, // Asegúrate de que estás usando el estado actualizado
+        shippingAddress: shippingAddressData, // Asegúrate de que estás usando el estado actualizado
         paymentResult,
       };
+
+      console.log("Shipping Address being sent:", shippingAddressData);
 
       console.log("Order Data being sent:", orderData);
 
@@ -234,7 +236,7 @@ export const Order: React.FC = () => {
                     try {
                       const details = await actions.order?.capture();
                       if (details) {
-                        saveOrder(details); // Guarda los detalles de la orden
+                        saveOrder(details, shippingAddress); // Guarda los detalles de la orden
                       } else {
                         setError("Error: No order details found.");
                       }

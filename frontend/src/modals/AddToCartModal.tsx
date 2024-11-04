@@ -15,13 +15,13 @@ export const AddToCartModal: React.FC<AddToCartModalProps> = ({
 }) => {
   return (
     <motion.div
-      className="bg-black bg-opacity-10 border border-white/15 rounded-lg p-8 text-center shadow-lg"
+      className="bg-black bg-opacity-10 border border-white/15 rounded-lg p-8 text-center shadow-lg "
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      <h2 className="text-2xl font-bold text-white mb-4">Product added to cart</h2>
-      <p className="text-lg text-white/70 mb-6">What would you like to do now?</p>
+      <h2 className="text-4xl font-bold text-white mb-4 tracking-tighter">Product added to cart</h2>
+      <p className="text-lg text-white/70 mb-6 p-4 tracking-tight">What would you like to do now?</p>
       <div className="flex justify-center gap-4">
         <Button
           onClick={() => {

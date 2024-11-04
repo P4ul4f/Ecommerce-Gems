@@ -113,4 +113,24 @@ userRoute.put(
   })
 );
 
+// Ruta para cambiar la contraseña
+userRoute.post(
+  "/forgot-password",
+  AsynHandler(async (req, res) => {
+    const { email, newPassword } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      res.status(404);
+      throw new Error("User not found");
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    res.json({ message: "Password updated successfully" });
+  })
+);
+
+
 module.exports = userRoute;

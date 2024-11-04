@@ -6,25 +6,20 @@ import { useState } from "react";
 import api from "@/services/axios";
 import { motion } from "framer-motion";
 
-export const Login = () => {
+export const ForgotPassword = () => {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setErrorMessage("");
+    setMessage("");
 
     try {
-      const response = await api.post("/api/users/login", { email, password });
-      // Guardar el token
-      localStorage.setItem("authToken", response.data.token);
-      window.location.href = "/";
-      // Redirigir o realizar alguna acción adicional tras el login
+      await api.post("/api/users/forgot-password", { email, newPassword });
+      setMessage("Password updated successfully.");
     } catch (error) {
-      setErrorMessage(
-        "Email o contraseña incorrectos. Por favor, inténtalo de nuevo."
-      );
+      setMessage("Error updating password. Please try again.");
     }
   };
 
@@ -49,7 +44,7 @@ export const Login = () => {
           ></div>
           <div className="relative">
             <h2 className="text-5xl md:text-6xl max-w-sm mx-auto tracking-tighter text-center font-medium text-white">
-              Login
+              Forgot Password
             </h2>
             <form onSubmit={handleSubmit} className="mt-5 max-w-md mx-auto">
               <div className="flex flex-col mb-4">
@@ -71,26 +66,23 @@ export const Login = () => {
               </div>
               <div className="flex flex-col mb-4">
                 <label
-                  htmlFor="password"
+                  htmlFor="newPassword"
                   className="text-lg text-white mb-2 tracking-tight"
                 >
-                  Password
+                  New Password
                 </label>
                 <input
                   type="password"
-                  id="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Your password"
+                  id="newPassword"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="New password"
                   required
                   className="p-2 bg-white/80 border text-black border-white rounded focus:outline-none focus:border-purple-800"
                 />
               </div>
-              <div>
-                <a href="" className="text-purple-800 text-center py-2">Forgot your password?</a>
-              </div>
-              {errorMessage && (
-                <p className="text-red-500 text-center mb-4">{errorMessage}</p> // Mensaje de error
+              {message && (
+                <p className="text-center mb-4 text-white">{message}</p>
               )}
               <div className="flex justify-center pt-10">
                 <Button>Submit</Button>
@@ -103,4 +95,5 @@ export const Login = () => {
   );
 };
 
-export default Login;
+export default ForgotPassword;
+
