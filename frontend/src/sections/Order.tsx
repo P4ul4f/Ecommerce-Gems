@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, ChangeEvent } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
@@ -12,8 +12,6 @@ export const Order: React.FC = () => {
   const [clientId, setClientId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState<string | null>(null);
-  const [isAddressSaved, setIsAddressSaved] = useState(false);
 
   const [shippingAddress, setShippingAddress] = useState({
     address: "",
@@ -47,24 +45,9 @@ export const Order: React.FC = () => {
     getPaypalClientID();
   }, []);
 
-  useEffect(() => {
-    const savedShippingAddress = localStorage.getItem("shippingAddress");
-    if (savedShippingAddress) {
-      setShippingAddress(JSON.parse(savedShippingAddress));
-      setIsAddressSaved(true);
-    }
-  }, []);
-
-  const handleShippingChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleShippingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setShippingAddress((prevAddress) => ({ ...prevAddress, [name]: value }));
-    setIsAddressSaved(false);
-  };
-
-  const handleSaveShippingAddress = () => {
-    localStorage.setItem("shippingAddress", JSON.stringify(shippingAddress));
-    setIsAddressSaved(true);
-    console.log("Shipping Address saved:", shippingAddress);
+    setShippingAddress((prev) => ({ ...prev, [name]: value }));
   };
 
   const saveOrder = async (paymentResult: any) => {
@@ -76,15 +59,13 @@ export const Order: React.FC = () => {
       const orderId = localStorage.getItem("orderId");
       if (!orderId) throw new Error("Order ID not found.");
 
-      const savedShippingAddress = JSON.parse(localStorage.getItem("shippingAddress") || "{}");
-
-      if (!savedShippingAddress.address || !savedShippingAddress.city || !savedShippingAddress.postcode || !savedShippingAddress.country) {
-        console.error("Shipping Address:", savedShippingAddress);
+      // Verificar si la dirección de envío está completa
+      if (!shippingAddress.address || !shippingAddress.city || !shippingAddress.postcode || !shippingAddress.country) {
         throw new Error("Complete all fields in the shipping address.");
       }
 
       const orderData = {
-        shippingAddress: savedShippingAddress,
+        shippingAddress,
         paymentResult,
       };
 
@@ -100,7 +81,6 @@ export const Order: React.FC = () => {
       console.log("Order created:", createdOrderId);
 
       localStorage.removeItem("cartItems");
-      localStorage.removeItem("shippingAddress");
       window.location.href = `/orderdetails/${createdOrderId}`;
     } catch (err) {
       if (err instanceof Error) {
@@ -174,20 +154,6 @@ export const Order: React.FC = () => {
               />
             </div>
           ))}
-          <div className="pt-6">
-            <button
-              type="button"
-              onClick={handleSaveShippingAddress}
-              disabled={isAddressSaved}
-              className={`w-full text-white font-bold py-2 rounded ${
-                isAddressSaved
-                  ? "bg-white/15 cursor-default"
-                  : "bg-white/15 hover:bg-white/30 cursor-pointer"
-              }`}
-            >
-              {isAddressSaved ? "Address Saved" : "Save Shipping Address"}
-            </button>
-          </div>
 
           <div className="pt-6">
             {clientId && (
@@ -217,18 +183,6 @@ export const Order: React.FC = () => {
                     try {
                       const details = await actions.order?.capture();
                       if (details) {
-                        console.log("Shipping Address before saving order:", shippingAddress);
-
-                        if (
-                          !shippingAddress.address ||
-                          !shippingAddress.city ||
-                          !shippingAddress.postcode ||
-                          !shippingAddress.country
-                        ) {
-                          setError("Complete all fields in the shipping address.");
-                          return;
-                        }
-
                         await saveOrder(details);
                       }
                     } catch (err) {
@@ -240,17 +194,11 @@ export const Order: React.FC = () => {
                       console.error(err);
                     }
                   }}
-                  onError={(err) => {
-                    setError("An error occurred with your payment. Please try again.");
-                    console.error("PayPal error:", err);
-                  }}
                 />
               </PayPalScriptProvider>
             )}
           </div>
         </form>
-        {message && <p>{message}</p>}
-        {error && <p>{error}</p>}
       </div>
     </section>
   );
