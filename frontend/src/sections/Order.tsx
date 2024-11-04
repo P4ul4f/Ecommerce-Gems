@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, ChangeEvent } from "react";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
@@ -13,6 +13,7 @@ export const Order: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<string | null>(null);
+  const [isAddressSaved, setIsAddressSaved] = useState(false);
 
   const [shippingAddress, setShippingAddress] = useState({
     address: "",
@@ -20,8 +21,6 @@ export const Order: React.FC = () => {
     postcode: "",
     country: "",
   });
-
-  const [isAddressSaved, setIsAddressSaved] = useState(false);
 
   const totalPrice = cart.items.reduce(
     (acc, item) => acc + item.price * item.quantity,
@@ -56,67 +55,62 @@ export const Order: React.FC = () => {
     }
   }, []);
 
-  const handleSaveShippingAddress = () => {
-    const shippingAddress = {
-        address: inputAddress,
-        city: inputCity,
-        postcode: inputPostcode,
-        country: inputCountry,
-    };
-    localStorage.setItem("shippingAddress", JSON.stringify(shippingAddress));
-    setShippingAddress(shippingAddress); // Actualiza el estado
-    console.log("Shipping Address saved:", shippingAddress);
-};
+  const handleShippingChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setShippingAddress((prevAddress) => ({ ...prevAddress, [name]: value }));
+    setIsAddressSaved(false);
+  };
 
+  const handleSaveShippingAddress = () => {
+    localStorage.setItem("shippingAddress", JSON.stringify(shippingAddress));
+    setIsAddressSaved(true);
+    console.log("Shipping Address saved:", shippingAddress);
+  };
 
   const saveOrder = async (paymentResult: any) => {
     try {
-        const token = localStorage.getItem("authToken");
-        if (!token) throw new Error("Authentication required. Please login.");
+      const token = localStorage.getItem("authToken");
+      if (!token) throw new Error("Authentication required. Please login.");
 
-        const config = { headers: { Authorization: `Bearer ${token}` } };
-        const orderId = localStorage.getItem("orderId");
-        if (!orderId) throw new Error("Order ID not found.");
+      const config = { headers: { Authorization: `Bearer ${token}` } };
+      const orderId = localStorage.getItem("orderId");
+      if (!orderId) throw new Error("Order ID not found.");
 
-        // Obtener la dirección de envío directamente desde localStorage
-        const savedShippingAddress = JSON.parse(localStorage.getItem("shippingAddress") || '{}');
+      const savedShippingAddress = JSON.parse(localStorage.getItem("shippingAddress") || "{}");
 
-        // Verificar si la dirección de envío está completa
-        if (!savedShippingAddress.address || !savedShippingAddress.city || !savedShippingAddress.postcode || !savedShippingAddress.country) {
-            console.error("Shipping Address:", savedShippingAddress);
-            throw new Error("Complete all fields in the shipping address.");
-        }
+      if (!savedShippingAddress.address || !savedShippingAddress.city || !savedShippingAddress.postcode || !savedShippingAddress.country) {
+        console.error("Shipping Address:", savedShippingAddress);
+        throw new Error("Complete all fields in the shipping address.");
+      }
 
-        const orderData = {
-            shippingAddress: savedShippingAddress,
-            paymentResult,
-        };
+      const orderData = {
+        shippingAddress: savedShippingAddress,
+        paymentResult,
+      };
 
-        console.log("Order Data being sent:", orderData);
+      console.log("Order Data being sent:", orderData);
 
-        const response = await axios.put(
-            `${BASE_URL}/api/orders/${orderId}/payment`,
-            orderData,
-            config
-        );
+      const response = await axios.put(
+        `${BASE_URL}/api/orders/${orderId}/payment`,
+        orderData,
+        config
+      );
 
-        const createdOrderId = response.data._id;
-        console.log("Order created:", createdOrderId);
+      const createdOrderId = response.data._id;
+      console.log("Order created:", createdOrderId);
 
-        localStorage.removeItem("cartItems");
-        localStorage.removeItem("shippingAddress");
-        window.location.href = `/orderdetails/${createdOrderId}`;
+      localStorage.removeItem("cartItems");
+      localStorage.removeItem("shippingAddress");
+      window.location.href = `/orderdetails/${createdOrderId}`;
     } catch (err) {
-        if (err instanceof Error) {
-            setError(err.message);
-        } else {
-            setError("An unknown error occurred.");
-        }
-        console.error(err);
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unknown error occurred.");
+      }
+      console.error(err);
     }
-};
-
-
+  };
 
   if (loading) return <Spinner color="default" />;
   if (error) return <p>Error: {error}</p>;
@@ -183,12 +177,7 @@ export const Order: React.FC = () => {
           <div className="pt-6">
             <button
               type="button"
-              onClick={() => {
-                // Guardar en localStorage cuando el usuario hace clic en "Guardar dirección de envío"
-                localStorage.setItem("shippingAddress", JSON.stringify(shippingAddress));
-                setIsAddressSaved(true);
-                console.log("Shipping Address saved:", shippingAddress);
-              }}
+              onClick={handleSaveShippingAddress}
               disabled={isAddressSaved}
               className={`w-full text-white font-bold py-2 rounded ${
                 isAddressSaved
@@ -230,7 +219,6 @@ export const Order: React.FC = () => {
                       if (details) {
                         console.log("Shipping Address before saving order:", shippingAddress);
 
-                        // Verificación de los campos de la dirección de envío
                         if (
                           !shippingAddress.address ||
                           !shippingAddress.city ||
@@ -261,10 +249,9 @@ export const Order: React.FC = () => {
             )}
           </div>
         </form>
-        {message && <p className="text-green-500">{message}</p>}
-        {error && <p className="text-red-500">{error}</p>}
+        {message && <p>{message}</p>}
+        {error && <p>{error}</p>}
       </div>
     </section>
   );
 };
-
