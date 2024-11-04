@@ -116,12 +116,12 @@ const CartPage = () => {
                           textShadow: "2px 2px 12px #ffffff",
                         }}
                       >
-                        Finalizar Compra
+                        Finalize purchase
                       </a>
                     )}
                   </div>
                   {/* Items de la Orden */}
-                  {order.items && order.items.length > 0 ? (
+                  {order.items && order.items.length >= 0 ? (
                     order.items.map((item) => (
                       <div key={item._id} className="flex items-center gap-4">
                         <Image

@@ -49,6 +49,11 @@ export const Order: React.FC = () => {
     getPaypalClientID();
   }, []);
 
+  // se guarda en localStorage cada vez que cambia shippingAddress
+  useEffect(() => {
+    localStorage.setItem("shippingAddress", JSON.stringify(shippingAddress));
+  }, [shippingAddress]);
+
   useEffect(() => {
     // Cargar la dirección de envío guardada en local storage al montar el componente
     const savedShippingAddress = localStorage.getItem("shippingAddress");
@@ -102,7 +107,7 @@ export const Order: React.FC = () => {
 
       localStorage.removeItem("cartItems");
       localStorage.removeItem("shippingAddress");
-      window.location.href = "/user-order/${createdOrderId}";
+      window.location.href = "/user-order/${orderId}";
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -190,7 +195,11 @@ export const Order: React.FC = () => {
               type="button"
               onClick={saveShippingAddress}
               disabled={isAddressSaved}
-              className="w-full bg-white/15 text-white font-bold py-2 rounded hover:bg-white/30"
+              className={`w-full text-white font-bold py-2 rounded ${
+                isAddressSaved
+                  ? "bg-white/15 cursor-default" 
+                  : "bg-white/15 hover:bg-white/30 cursor-pointer"  
+              }`}
             >
               {isAddressSaved ? "Address Saved" : "Save Shipping Address"}
             </button>

@@ -31,8 +31,6 @@ export const EditProfile = ({ profileData }: { profileData: ProfileData }) => {
         { name, email, password },
         config
       );
-
-      alert("Profile updated successfully!");
       window.location.href = "/profile"; // Redirige de vuelta al perfil
     } catch (err) {
       console.error("Error updating profile", err);

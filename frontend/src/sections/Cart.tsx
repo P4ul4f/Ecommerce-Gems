@@ -15,6 +15,10 @@ export const Cart: React.FC = () => {
     0
   );
 
+  const taxPrice = totalPrice * 0.1; // 10% de impuesto
+  const shippingPrice = 5.00; // Un costo de envío fijo, podrías calcularlo de otra manera si es necesario
+  const finalTotalPrice = totalPrice + taxPrice + shippingPrice;
+
   // Manejar el incremento de cantidad
   const handleAddQuantity = (productId: string) => {
     const product = cart.items.find((item) => item._id === productId);
@@ -58,6 +62,9 @@ export const Cart: React.FC = () => {
         price: item.price,
         quantity: item.quantity,
       })),
+      taxPrice, 
+      shippingPrice,
+      totalPrice: finalTotalPrice,
     };
 
     try {

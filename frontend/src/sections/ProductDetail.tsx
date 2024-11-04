@@ -129,13 +129,14 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
       {/* Renderiza el Modal si showModal es true */}
       {showModal && (
-        <AddToCartModal
-          onClose={() => setShowModal(false)}
-          onContinueShopping={handleContinueShopping}
-          onGoToCart={handleGoToCart}
-        />
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <AddToCartModal
+            onClose={handleCloseModal}
+            onContinueShopping={handleContinueShopping}
+            onGoToCart={handleGoToCart}
+          />
+        </div>
       )}
-
     </motion.section>
   );
 };
