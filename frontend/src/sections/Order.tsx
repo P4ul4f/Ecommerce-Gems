@@ -1,4 +1,3 @@
-"use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
@@ -12,6 +11,7 @@ export const Order: React.FC = () => {
   const [clientId, setClientId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAddressComplete, setIsAddressComplete] = useState(false);
 
   const [shippingAddress, setShippingAddress] = useState({
     address: "",
@@ -47,7 +47,12 @@ export const Order: React.FC = () => {
 
   const handleShippingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setShippingAddress((prev) => ({ ...prev, [name]: value }));
+    const updatedAddress = { ...shippingAddress, [name]: value };
+    setShippingAddress(updatedAddress);
+
+    // Validar si todos los campos de dirección están completos
+    const isComplete = Object.values(updatedAddress).every(field => field.trim() !== "");
+    setIsAddressComplete(isComplete);
   };
 
   const saveOrder = async (paymentResult: any) => {
@@ -59,8 +64,7 @@ export const Order: React.FC = () => {
       const orderId = localStorage.getItem("orderId");
       if (!orderId) throw new Error("Order ID not found.");
 
-      // Verificar si la dirección de envío está completa
-      if (!shippingAddress.address || !shippingAddress.city || !shippingAddress.postcode || !shippingAddress.country) {
+      if (!isAddressComplete) {
         throw new Error("Complete all fields in the shipping address.");
       }
 
@@ -156,7 +160,7 @@ export const Order: React.FC = () => {
           ))}
 
           <div className="pt-6">
-            {clientId && (
+            {clientId && isAddressComplete && (
               <PayPalScriptProvider
                 options={{
                   clientId: clientId,
