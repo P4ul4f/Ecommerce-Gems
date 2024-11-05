@@ -83,7 +83,6 @@ export const Order: React.FC = () => {
       );
 
       const createdOrderId = response.data._id;
-      console.log("Order created:", createdOrderId);
 
       localStorage.removeItem("cartItems");
       window.location.href = `/orderdetails/${createdOrderId}`;

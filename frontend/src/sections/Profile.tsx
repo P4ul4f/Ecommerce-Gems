@@ -49,7 +49,12 @@ const Profile = () => {
     fetchProfile();
   }, []);
 
-  if (loading) return <Spinner color="default" />;
+  if (loading)
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg black bg-opacity-50 z-50">
+        <Spinner color="default" />
+      </div>
+    );
   if (error) return <p>Error: {error}</p>;
 
   const handleLogout = () => {

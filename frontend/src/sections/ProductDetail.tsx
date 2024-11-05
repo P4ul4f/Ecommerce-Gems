@@ -129,7 +129,10 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
       {/* Renderiza el Modal si showModal es true */}
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+          onClick={handleCloseModal}
+        >
           <AddToCartModal
             onClose={handleCloseModal}
             onContinueShopping={handleContinueShopping}
