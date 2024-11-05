@@ -51,8 +51,8 @@ const Profile = () => {
 
   if (loading)
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg black bg-opacity-50 z-50 min-w-screen mx-auto">
-        <Spinner color="default" />
+      <div className="fixed inset-0 flex items-center justify-center bg black bg-opacity-50 z-50">
+        <Spinner color="primary" />
       </div>
     );
   if (error) return <p>Error: {error}</p>;
