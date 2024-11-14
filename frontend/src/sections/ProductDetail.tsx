@@ -86,7 +86,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
     >
       <div className={`${showModal ? "blur-md" : ""}`}>
         <div
-          className="container flex flex-col md:flex-row items-center justify-center mx-auto h-full border border-white rounded-xl py-16"
+          className="container flex flex-col md:flex-row items-center justify-center mx-auto h-full border border-white rounded-xl py-16 sm:mx-4 md:mx-0"
           style={{
             boxShadow:
               "0 0 10px rgba(255, 255, 255, 0.6), 0 0 20px rgba(255, 255, 255, 0.4)",
@@ -130,7 +130,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
       {/* Renderiza el Modal si showModal es true */}
       {showModal && (
         <div
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 sm:mx-4"
           onClick={handleCloseModal}
         >
           <AddToCartModal

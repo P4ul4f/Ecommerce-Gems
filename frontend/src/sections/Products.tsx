@@ -65,7 +65,7 @@ export const Products = () => {
           exceptional beauty and craftsmanship.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10 text-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-8 lg:gap-8 sm:gap-6 mt-10 text-center">
           {products.map((product) => (
             <div
               key={product._id}

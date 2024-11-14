@@ -32,7 +32,7 @@ export const Login = () => {
     <section className="py-20 md:py-24">
       <div className="container">
         <motion.div
-          className="border border-white/25 py-24 rounded-xl overflow-hidden relative"
+          className="border border-white/25 py-24 rounded-xl overflow-hidden relative sm:px-5"
           style={{ backgroundImage: `url(${starsBg.src})` }}
           animate={{
             backgroundPositionX: starsBg.width,

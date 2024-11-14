@@ -73,7 +73,7 @@ const CartPage = () => {
               orders.map((order) => (
                 <div
                   key={order._id}
-                  className="flex flex-col gap-2 p-6 border-b border-white/15"
+                  className="flex flex-col sm:flex-1 gap-2 p-6 border-b border-white/15"
                 >
                   <div className="flex justify-between items-center ">
                     <p className="text-lg text-white/80">
