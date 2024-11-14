@@ -78,7 +78,7 @@ const OrderDetails: React.FC = () => {
         <section className="container flex justify-center p-10">
           {/* Contenedor para Detalles de la Orden */}
           <div className="md:w-2/3 p-10 flex flex-col gap-8 sm:mx-4 rounded-lg bg-[radial-gradient(90%_70%_at_center_center,rgb(140,69,255,0.5)_15%,rgb(14,0,36,-5)_78%,transparent)]">
-            <h2 className="text-4xl sm:text-2xl tracking-tighter font-bold text-white mb-4">
+            <h2 className="md:text-4xl sm:text-2xl tracking-tighter font-bold text-white mb-4">
               Order ID: {order._id}
             </h2>
 

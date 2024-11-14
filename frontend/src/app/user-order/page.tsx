@@ -66,7 +66,7 @@ const CartPage = () => {
         <section className="container flex justify-center p-10">
           {/* Contenedor para Órdenes */}
           <div className="md:w-2/3 p-6 rounded-lg bg-[radial-gradient(90%_70%_at_center_center,rgb(140,69,255,0.5)_15%,rgb(14,0,36,-5)_78%,transparent)]">
-            <h2 className="text-6xl tracking-tighter font-bold text-white mb-4">
+            <h2 className="md:text-6xl sm:text-3xl tracking-tighter font-bold text-white mb-4">
               Your Orders
             </h2>
             {orders.length > 0 ? (
