@@ -80,7 +80,7 @@ const CartPage = () => {
                       Order ID: {order._id}
                     </p>
                   </div>
-                  <div className="flex justify-end items-center">
+                  <div className="flex justify-end items-center order-last sm:order-none">
                     {order.isCompleted ? (
                       <a
                         href={`/orderdetails/${order._id}`}
